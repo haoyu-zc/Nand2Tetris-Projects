@@ -1,2 +1,7 @@
 # Compressed File
 *.zip
+
+# Hardware Simulator Files
+*.cmp
+*.tst
+*.out
