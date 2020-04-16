@@ -45,16 +45,14 @@ CHIP ALU {
     // zx
     Mux16(a=x, b[0..15]=false, sel=zx, out=ox1);
     // nx
-    Not16(in=x, out=nx1);
-    Inc16(in=nx1, out=negx);
-    Mux16(a=x, b=negx, sel=nx, out=ox2);
+    Not16(in=ox1, out=negx);
+    Mux16(a=ox1, b=negx, sel=nx, out=ox2);
 
     // zy
     Mux16(a=y, b[0..15]=false, sel=zy, out=oy1);
     // ny
-    Not16(in=y, out=ny1);
-    Inc16(in=ny1, out=negy);
-    Mux16(a=y, b=negy, sel=ny, out=oy2);
+    Not16(in=oy1, out=negy);
+    Mux16(a=oy1, b=negy, sel=ny, out=oy2);
 
     // f: x & y
     And16(a=ox2, b=oy2, out=fand);
@@ -64,13 +62,13 @@ CHIP ALU {
     Mux16(a=fand, b=fplus, sel=f, out=o3);
 
     // no
-    Not16(in=o3, out=nf1);
-    Inc16(in=nf1, out=negf);
-    Mux16(a=o3, b=negf, sel=no, out=out);
+    Not16(in=o3, out=negf);
+    Mux16(a=o3, b=negf, sel=no, out=out, out=o4);
 
     // zr
-    And16(a=out, b[0..15]=false, out=zr);
+    Or16Way(in=o4, out=nzr);
+    Not(in=nzr, out=zr);
     // ng
-    And(a=out[15], b=true, out=ng);
+    IsNeg(in=o4, out=ng);
     
 }
