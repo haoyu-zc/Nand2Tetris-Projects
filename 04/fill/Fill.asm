@@ -23,31 +23,13 @@ D=A
 M=D
 
 (LISTEN)
-(LOOP_WHITE)
-@i
+@KBD
 D=M
-@pixels
-D=D-M
-@LISTEN
-D;JEQ
-
-@SCREEN
-D=M
-@i
-A=D+M
-M=0
-
-// i++
-@i
-M=M+1
+@LOOP_BLACK
+D;JGT
 
 @LOOP_WHITE
 0;JMP
-
-@KBD
-D=M
-@BLACK
-D;JGT
 
 (LOOP_BLACK)
 @i
@@ -58,17 +40,37 @@ D=D-M
 D;JEQ
 
 @SCREEN
-D=M
+// !important: bug will occur if written "D=M"
+D=A
 @i
 A=D+M
-M=1
+// let word M to be -1 to get 16 bits of "1", which is 16 black pixels
+M=-1
 
 // i++
 @i
 M=M+1
 
-@LOOP_BLACK
+@LISTEN
 0;JMP
 
+(LOOP_WHITE)
+@i
+D=M
 @LISTEN
-0;JEQ
+D;JLT
+
+@SCREEN
+// !important: bug will occur if written "D=M"
+D=A
+@i
+A=D+M
+// let word M to be -1 to get 16 bits of "1", which is 16 black pixels
+M=0
+
+// i++
+@i
+M=M-1
+
+@LISTEN
+0;JMP
