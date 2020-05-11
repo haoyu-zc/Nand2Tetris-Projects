@@ -7,11 +7,14 @@
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
 // Put your code here.
-
+@R0
+D=M
 @icand
-M=R0
+M=D
+@R1
+D=M
 @factor
-M=R1
+M=D
 @result
 M=0
 
