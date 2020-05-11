@@ -9,10 +9,15 @@
 // Put your code here.
 @R0
 D=M
+@ZERO
+D;JEQ   // end program if icand=0
 @icand
 M=D
+
 @R1
 D=M
+@ZERO
+D;JEQ   // end program if factor=0
 @factor
 M=D
 @result
@@ -22,7 +27,7 @@ M=0
 @factor
 D=M
 @STOP
-0;JEQ
+D;JEQ
 
 @result
 D=M
@@ -34,6 +39,10 @@ M=D
 M=M-1
 @LOOP
 0;JMP
+
+(ZERO)
+@result
+M=0
 
 (STOP)
 @result
