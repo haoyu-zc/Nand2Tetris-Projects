@@ -26,7 +26,8 @@ D=M
 
 @result
 D=M
-D=M+R0
+@icand
+D=D+M
 @result
 M=D
 @factor // use factor as a mult counter
