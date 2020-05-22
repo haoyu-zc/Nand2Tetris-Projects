@@ -76,7 +76,7 @@ CHIP CPU {
     Mux16(a=aluout2a, b=instruction, sel=isAinst, out=aregmux);
     ARegister(in=aregmux, load=cbd1, out=aregout2mux, out=aregout2pc,
     out[0..14]=addressM);
-    Mux16(a=inM, b=aregout2mux, sel=cba, out=ammuxout);
+    Mux16(a=aregout2mux, b=inM, sel=cba, out=ammuxout);
     
     // ALU part
     ALU(x=dregout, y=ammuxout, zx=cbc1, nx=cbc2, zy=cbc3,
