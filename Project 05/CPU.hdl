@@ -39,33 +39,66 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Create a variable pin for instruction control bit
-    Or(a=instruction[0], b=false, out=isAinst);
-    Mux16(a=instruction, b=aluout2a, sel=isAinst, out=aregmux);
-    ARegister(in=aregmux, load=instruction[10], out=aregout2mux, out=aregout2pc,
+    // Decoder of "CPU Input part"
+    // Create a variable pin for instruction control bit, op-code bit
+    Not(in=instruction[15], out=isAinst);
+    
+    // "cb" stands for control bit
+    // Control bit of A/M Mux, true if (A-instruction)
+    Mux(a=instruction[12], b=true, sel=isAinst, out=cba);
+
+    // Decoder of "ALU part"
+    // c-bits
+    Mux(a=instruction[11], b=true, sel=isAinst, out=cbc1);
+    Mux(a=instruction[10], b=false, sel=isAinst, out=cbc2);
+    Mux(a=instruction[9], b=true, sel=isAinst, out=cbc3);
+    Mux(a=instruction[8], b=false, sel=isAinst, out=cbc4);
+    Mux(a=instruction[7], b=true, sel=isAinst, out=cbc5);
+    Mux(a=instruction[6], b=false, sel=isAinst, out=cbc6);
+
+    // Destination bits
+    // Control bit of A register
+    Mux(a=instruction[5], b=true, sel=isAinst, out=cbd1);
+    // Control bit of D register
+    Mux(a=instruction[4], b=false, sel=isAinst, out=cbd2);
+    // Control bit of M register
+    Mux(a=instruction[3], b=false, sel=isAinst, out=cbd3);
+
+    // Jump bits
+    Mux(a=instruction[2], b=false, sel=isAinst, out=cbj1);
+    Mux(a=instruction[1], b=false, sel=isAinst, out=cbj2);
+    Mux(a=instruction[0], b=false, sel=isAinst, out=cbj3);
+
+
+    // CPU Input part
+    // If (A-insturction), then load it to A register, otherwise load 
+    // from aluout2a
+    Mux16(a=aluout2a, b=instruction, sel=isAinst, out=aregmux);
+    ARegister(in=aregmux, load=cbd1, out=aregout2mux, out=aregout2pc,
     out[0..14]=addressM);
-    Mux16(a=aregout2mux, b=inM, sel=instruction[3], out=ammuxout);
+    Mux16(a=inM, b=aregout2mux, sel=cba, out=ammuxout);
     
     // ALU part
-    ALU(x=dregout, y=ammuxout, zx=instruction[4], nx=instruction[5], zy=instruction[6],
-    ny=instruction[7], f=instruction[8], no=instruction[9],
+    ALU(x=dregout, y=ammuxout, zx=cbc1, nx=cbc2, zy=cbc3,
+    ny=cbc4, f=cbc5, no=cbc6,
     out=aluout2a, out=aluout2d, out=aluout2m, zr=zr, ng=ng);
 
     // ALU outputs
-    Mux16(a=false, b=aluout2m, sel=instruction[12], out=outM);
-    Or(a=instruction[12], b=false, out=writeM);
+    Mux16(a=false, b=aluout2m, sel=cbd3, out=outM);
+    Or(a=cbd3, b=false, out=writeM);
 
     // D register
-    DRegister(in=aluout2d, load=instruction[11], out=dregout);
+    DRegister(in=aluout2d, load=cbd2, out=dregout);
 
     // PC part
     // Compute load and inc
-    And(a=ng, b=instruction[13], out=isLess);
+    And(a=ng, b=cbj1, out=isLess);
     Mux(a=false, b=true, sel=isLess, out=o1);
-    And(a=zr, b=instruction[14], out=isEqual);
+    And(a=zr, b=cbj2, out=isEqual);
     Mux(a=o1, b=true, sel=isEqual, out=o2);
-    And(a=o2, b=false, out=o3);
-    Mux(a=o3, b=true, sel=instruction[15], out=load);
+    Not(in=ng, out=ps);
+    And(a=ps, b=cbj3, out=isGreater);
+    Mux(a=o2, b=true, sel=isGreater, out=load);
 
-    PC(in=aregout2pc, load=load, inc=true, reset=reset, out=PC);
+    PC(in=aregout2pc, load=load, inc=true, reset=reset, out[0..14]=pc);
 }
