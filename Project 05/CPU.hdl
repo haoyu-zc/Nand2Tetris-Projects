@@ -96,7 +96,10 @@ CHIP CPU {
     Mux(a=false, b=true, sel=isLess, out=o1);
     And(a=zr, b=cbj2, out=isEqual);
     Mux(a=o1, b=true, sel=isEqual, out=o2);
-    Not(in=ng, out=ps);
+    // If aluout is postive (zero not including)
+    Not(in=ng, out=nng);
+    Not(in=zr, out=nzr);
+    And(a=nng, b=nzr, out=ps);
     And(a=ps, b=cbj3, out=isGreater);
     Mux(a=o2, b=true, sel=isGreater, out=load);
 
