@@ -48,7 +48,7 @@ CHIP CPU {
     Mux(a=instruction[12], b=true, sel=isAinst, out=cba);
 
     // Decoder of "ALU part"
-    // c-bits
+    // c-bits, default to compute "0"
     Mux(a=instruction[11], b=true, sel=isAinst, out=cbc1);
     Mux(a=instruction[10], b=false, sel=isAinst, out=cbc2);
     Mux(a=instruction[9], b=true, sel=isAinst, out=cbc3);
