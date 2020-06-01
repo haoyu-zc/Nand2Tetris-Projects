@@ -5,3 +5,6 @@
 *.cmp
 *.tst
 *.out
+
+# vscode c++ config files
+\.vscode
