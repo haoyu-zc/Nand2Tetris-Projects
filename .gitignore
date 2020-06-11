@@ -8,3 +8,6 @@
 
 # vscode c++ config files
 \.vscode
+
+# .exe files
+*.exe
