@@ -17,19 +17,23 @@ D=A
 @i
 M=D
 
+// Use 8192 registers to represent 8192 * 16 = 256 * 512 pixels
 @8192
 D=A
 @pixels
 M=D
 
+
+// Listen to the keyboard status
+// @KBD would be 0 when no keys are pressed down
 (LISTEN)
 @KBD
 D=M
 @LOOP_BLACK
 D;JGT
-
 @LOOP_WHITE
 0;JMP
+
 
 (LOOP_BLACK)
 @i
@@ -53,6 +57,8 @@ M=M+1
 
 @LISTEN
 0;JMP
+// End of (LOOP_BLACK)
+
 
 (LOOP_WHITE)
 @i
@@ -65,7 +71,7 @@ D;JLT
 D=A
 @i
 A=D+M
-// let word M to be -1 to get 16 bits of "1", which is 16 black pixels
+// let word M to be 0 to get 16 bits of "0", which is 16 white pixels
 M=0
 
 // i++
@@ -74,3 +80,4 @@ M=M-1
 
 @LISTEN
 0;JMP
+// End of (LOOP_WHITE)
