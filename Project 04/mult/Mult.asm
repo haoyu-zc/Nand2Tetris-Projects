@@ -7,6 +7,8 @@
 // (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
 
 // Put your code here.
+
+// Create variable icand to store value in R0
 @R0
 D=M
 @ZERO
@@ -14,6 +16,7 @@ D;JEQ   // end program if icand=0
 @icand
 M=D
 
+// Create variable factor to store value in R1
 @R1
 D=M
 @ZERO
@@ -23,11 +26,13 @@ M=D
 @result
 M=0
 
+// Start multification
+// Algo: iter(icand + icand, factor - 1, when factor >=0)
 (LOOP)  // add R0 to result in each loop
 @factor
 D=M
 @STOP
-D;JEQ
+D;JEQ   // End if factor hits zero
 
 @result
 D=M
@@ -40,10 +45,12 @@ M=M-1
 @LOOP
 0;JMP
 
+// Jump to here when icand or facotr equals zero
 (ZERO)
 @result
 M=0
 
+// Store the value in R2 as required
 (STOP)
 @result
 D=M
